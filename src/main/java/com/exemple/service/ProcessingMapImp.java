@@ -12,11 +12,10 @@ public class ProcessingMapImp implements ProcessingMap {
     }
 
     @Override
-    public boolean compareMaps(Map<String, String> newNews, Map<String, String> oldNews) {
-        var isSameMaps = oldNews.entrySet().stream()
-                .allMatch(e -> e.getKey().equals(newNews.get(e.getKey())));
-
-        return isSameMaps;
+    public boolean compareMaps(Map<String, String> firstNow, Map<String, String> secondOld) {
+        boolean result;
+        result  = firstNow.equals(secondOld);
+        return result;
 
     }
 

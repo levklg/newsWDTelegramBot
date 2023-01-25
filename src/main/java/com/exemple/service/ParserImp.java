@@ -31,20 +31,23 @@ public class ParserImp implements Parser {
                     .referrer("http://google.com")
                     .header("headersecurity", "xyz123")
                     .get();
+            Elements resultLinks = doc.select("div.b-news-teaser-v4__title");
+            Elements element = resultLinks.select("a[href]");
+            var lt = element.eachText();
+            var lh = element.eachAttr("href");
+
+            for (int i = 0; i < lt.size(); i++) {
+                returnHashMap.put(lt.get(i),"https://nikatv.ru" + lh.get(i));
+            }
+
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No response from nikatv.ru");
+            System.out.println(e);
+
         }
 
-        Elements resultLinks = doc.select("div.b-news-teaser-v4__title");
-        Elements element = resultLinks.select("a[href]");
-        var lt = element.eachText();
-        var lh = element.eachAttr("href");
-
-        for (int i = 0; i < lt.size(); i++) {
-            returnHashMap.put(lt.get(i),"https://nikatv.ru" + lh.get(i));
-        }
 
         return returnHashMap;
     }
@@ -66,29 +69,32 @@ public class ParserImp implements Parser {
                     .header("headersecurity", "xyz123")
                     .get();
 
+            Elements resultLinks;
+            Elements element;
+
+            List<String> listText = new LinkedList<>();
+            List<String> listHref = new LinkedList<>();
+            for (var selector : rbcSelectorList) {
+                resultLinks = doc.select(selector);
+                element = resultLinks.select("a[href]");
+
+                var lt = element.eachText();
+                var lh = element.eachAttr("href");
+
+                listText.addAll(lt);
+                listHref.addAll(lh);
+            }
+
+            for (int i = 0; i < listText.size(); i++) {
+                returnHashMap.put(listText.get(i), listHref.get(i));
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No response from rbc.ru");
+            System.out.println(e);
         }
 
-        Elements resultLinks;
-        Elements element;
 
-        List<String> listText = new LinkedList<>();
-        List<String> listHref = new LinkedList<>();
-        for (var selector : rbcSelectorList) {
-            resultLinks = doc.select(selector);
-            element = resultLinks.select("a[href]");
-
-            var lt = element.eachText();
-            var lh = element.eachAttr("href");
-
-            listText.addAll(lt);
-            listHref.addAll(lh);
-        }
-
-        for (int i = 0; i < listText.size(); i++) {
-            returnHashMap.put(listText.get(i), listHref.get(i));
-        }
 
         return returnHashMap;
     }
@@ -110,7 +116,8 @@ public class ParserImp implements Parser {
           doc =  conn.get();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No response from kaluga24.tv");
+            System.out.println(e);
         }
 
         Elements resultLinks;
@@ -137,7 +144,7 @@ public class ParserImp implements Parser {
         HashMap<String, String> returnHashMap = new HashMap<>();
         Document doc = null;
         try {
-            doc = Jsoup.connect("https://www.kp40.ru/")
+            doc = Jsoup.connect("https://www.kp40.ru/news/")
                     .userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
                     .timeout(5000)
                     .cookie("cookiename", "val234")
@@ -145,20 +152,24 @@ public class ParserImp implements Parser {
                     .referrer("http://google.com")
                     .header("headersecurity", "xyz123")
                     .get();
+            doc.select("div.news_info").remove();
+            doc.select("div.nrli-rublink").remove();
+            Elements resultLinks = doc.select("div.nrlif-body.col.-order-1.-order-sm-1");//"div.news-list"
+            Elements element = resultLinks.select("a[href]");
+
+            var lt = element.eachText();
+            var lh = element.eachAttr("href");
+
+            for (int i = 0; i < lt.size(); i++) {
+                returnHashMap.put(lt.get(i),  "https://www.kp40.ru/news/" + lh.get(i));
+            }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No response from www.kp40.ru");
+            System.out.println(e);
         }
 
-        Elements resultLinks = doc.select("div.news-card-title-big");
-        Elements element = resultLinks.select("a[href]");
 
-        var lt = element.eachText();
-        var lh = element.eachAttr("href");
-
-        for (int i = 0; i < lt.size(); i++) {
-            returnHashMap.put(lt.get(i),  "https://www.kp40.ru" + lh.get(i));
-        }
       return returnHashMap;
     }
     @Override
@@ -174,23 +185,26 @@ public class ParserImp implements Parser {
                     .referrer("http://google.com")
                     .header("headersecurity", "xyz123")
                     .get();
+            Elements resultLinks;
+            Elements element;
+            doc.select("div.info").remove();
+            resultLinks = doc.select("div.frontend-news-list");
+            resultLinks = doc.select("div.row.new.frontend-news-list");
+            element = resultLinks.select("a[href]");
+            var lt = element.eachText();
+            var lh = element.eachAttr("href");
+
+            for (int i = 0; i < lt.size(); i++) {
+                returnHashMap.put(lt.get(i),lh.get(i));
+            }
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No response from kaluga-poisk.ru");
+            System.out.println(e);
         }
 
-        Elements resultLinks;
-        Elements element;
 
-        resultLinks = doc.select("div.frontend-news-list");
-        element = resultLinks.select("a[href]");
-        var lt = element.eachText();
-        var lh = element.eachAttr("href");
-
-        for (int i = 0; i < lt.size(); i++) {
-            returnHashMap.put(lt.get(i),lh.get(i));
-        }
         return returnHashMap;
     }
 
@@ -209,20 +223,22 @@ public class ParserImp implements Parser {
                     .referrer("http://google.com")
                     .header("headersecurity", "xyz123")
                     .get();
+            Elements resultLinks = doc.select("div.read-title");
+            Elements element = resultLinks.select("a[href]");
+            var lt = element.eachText();
+            var lh = element.eachAttr("href");
+
+            for (int i = 0; i < lt.size(); i++) {
+                returnHashMap.put(lt.get(i),lh.get(i));
+            }
+
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No response from znamkaluga.ru.ru");
+            System.out.println(e);
         }
 
-        Elements resultLinks = doc.select("div.read-title");
-        Elements element = resultLinks.select("a[href]");
-        var lt = element.eachText();
-        var lh = element.eachAttr("href");
-
-        for (int i = 0; i < lt.size(); i++) {
-            returnHashMap.put(lt.get(i),lh.get(i));
-        }
 
         return returnHashMap;
 

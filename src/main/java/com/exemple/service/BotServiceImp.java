@@ -1,7 +1,7 @@
 package com.exemple.service;
 
 
-import com.exemple.Bot;
+import com.exemple.model.Bot;
 import com.exemple.model.Customer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,9 +10,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.exemple.App.transactionManager;
-import static com.exemple.App.userDataTemplate;
 
 public class BotServiceImp implements BotService {
 
@@ -88,7 +85,7 @@ public class BotServiceImp implements BotService {
                             pause();
                             sendText(customerSaved.getIdChat(), "Ваш логин: " + customerSaved.getUserName());
                             pause();
-                            sendText(customerSaved.getIdChat(), "Ваш пароль: " + customerSaved.getPassword());
+                            sendText(customerSaved.getIdChat(), "Ваш пароль: " + msg.getText());
                             pause();
                             sendText(customerSaved.getIdChat(), "Для настроек и запуска пройдите на www.newswatchdog.org");
                         }else {
@@ -126,6 +123,7 @@ public class BotServiceImp implements BotService {
             throw new RuntimeException(e);
         }
     }
+
 
 
     public void pause() {
