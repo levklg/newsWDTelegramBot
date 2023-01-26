@@ -48,7 +48,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "";
+        return "5883016412:AAEn37R4wSxiMhqFQ0GDFcvl3eqodgUUsk0";
     }
 
     @Override
@@ -125,7 +125,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void processCustomers() {
-     //   downloadContent();
+        downloadContent();
         mapCustomer = botServiceImp.getAllCustomer(); //// для тестов потом заменить на changeUserSetting
         if(mapCustomer.size() == 0){
             System.out.println("Список клиентов пустой " + mapCustomer.size());

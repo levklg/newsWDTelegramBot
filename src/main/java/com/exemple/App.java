@@ -48,7 +48,7 @@ public class App {
         botsApi.registerBot(new Bot());
 
         TaskBot taskBot = new TaskBot();
-        taskBot.startTask(300, bot);//900
+        taskBot.startTask(600, bot);//900
 
 
     }

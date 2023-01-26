@@ -54,7 +54,7 @@ public class BotServiceImp implements BotService {
                  customer.setUserName(msg.getText());
                  sendText(customer.getIdChat(), "Ваш логин: " + msg.getText());
                  pause();
-                 sendText(customer.getIdChat(), "Далее отправтьте команду /password");
+                 sendText(customer.getIdChat(), "Далее отправьте команду /password");
                  customer.setIsLoginInput(false);
 
              }else{
