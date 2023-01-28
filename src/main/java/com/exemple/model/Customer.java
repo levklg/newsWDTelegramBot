@@ -20,6 +20,7 @@ public class Customer {
 
     public Customer(User user) {
         this.user = user;
+        this.idChat = user.getTelegramID();
 
     }
 

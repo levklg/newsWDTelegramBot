@@ -4,6 +4,7 @@ package com.exemple.service;
 
 
 import com.exemple.model.User;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,25 @@ public class DbServiceUserImpl implements DBServiceUser {
             log.info("userList:{}", userList);
             return userList;
         });
+    }
+
+    @Override
+    public void update(User user) {
+        transactionManager.doInReadOnlyTransaction(session -> {
+            userDataTemplate.update(session,user);
+            return null;
+        });
+    }
+
+
+    @Override
+    public User findByUserName(String name) {
+        return transactionManager.doInReadOnlyTransaction(session -> {
+            var user = userDataTemplate.findUserByName(session, name);
+            log.info("client: {}",user);
+            return  user;
+        });
+
     }
 
 

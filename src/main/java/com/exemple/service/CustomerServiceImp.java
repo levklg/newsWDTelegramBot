@@ -41,7 +41,16 @@ public class CustomerServiceImp implements CustomerService {
         return mapCustomer;
     }
 
+    @Override
+    public User findCustomerName(String name) {
+        var user = dbServiceUser.findByUserName(name);
+        return  user;
+    }
 
+    @Override
+    public void updateUser(User user) {
+        dbServiceUser.update(user);
+    }
 
 
     @Override

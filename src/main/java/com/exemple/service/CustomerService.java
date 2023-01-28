@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface CustomerService {
-    public boolean isUserExists(HashMap<Long, Customer> mapCustomer, long chatID, String name);
-    public HashMap<Long, Customer> getAllCustomer();
+    boolean isUserExists(HashMap<Long, Customer> mapCustomer, long chatID, String name);
+    HashMap<Long, Customer> getAllCustomer();
+    User findCustomerName(String name);
+    void updateUser(User user);
     HashMap<Long, Customer>createMapCustomer(List<User> userList);
     Customer saveCustomerToUser(Customer customer);
     List<String> getListOfNewsForTheUser(Map<String, String>  mapUpDateNews);

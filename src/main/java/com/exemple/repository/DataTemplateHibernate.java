@@ -1,6 +1,8 @@
 package com.exemple.repository;
 
+import com.exemple.model.User;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,17 +20,6 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
         return Optional.ofNullable(session.find(clazz, id));
     }
 
-    @Override
-    public List<T> findByEntityField(Session session, String entityFieldName, Object entityFieldValue) {
-        var criteriaBuilder = session.getCriteriaBuilder();
-        var criteriaQuery = criteriaBuilder.createQuery(clazz);
-        var root = criteriaQuery.from(clazz);
-        criteriaQuery.select(root)
-                .where(criteriaBuilder.equal(root.get(entityFieldName), entityFieldValue));
-
-        var query = session.createQuery(criteriaQuery);
-        return query.getResultList();
-    }
 
     @Override
     public List<T> findAll(Session session) {
@@ -42,6 +33,23 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
 
     @Override
     public void update(Session session, T object) {
-        session.merge(object);
+          session.update(object);
     }
+
+    @Override
+    public User findUserByName(Session session,String name) {
+
+
+        var query =  session.createQuery(String.format("from %s where userName = :name", clazz.getSimpleName()), clazz);
+        query.setParameter("name", name);
+        var list = query.getResultList();
+        var listFindUser = list.stream().findFirst();
+        var user = listFindUser.get();
+        int i = 0;
+        return (User) user;
+
+
+    }
+
+
 }

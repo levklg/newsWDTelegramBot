@@ -4,6 +4,8 @@ import com.exemple.dbmigrations.MigrationsExecutorFlyway;
 import com.exemple.model.Bot;
 import com.exemple.model.User;
 import com.exemple.model.UserSetting;
+import com.exemple.server.ServerNewsWD;
+import com.exemple.service.CustomerServiceImp;
 import com.exemple.service.TaskBot;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -28,6 +30,11 @@ public class App {
 
     public static void main(String[] args) throws TelegramApiException {
 
+
+
+
+
+
         var configuration = new Configuration().configure(HIBERNATE_CFG_FILE);
 
 
@@ -42,13 +49,18 @@ public class App {
         transactionManager = new TransactionManagerHibernate(sessionFactory);
 
         userDataTemplate = new DataTemplateHibernate<>(User.class);
-
+        CustomerServiceImp customerServiceImp = new CustomerServiceImp();
+        var customer =customerServiceImp.findCustomerName("Lev");
+        ServerNewsWD serverNewsWD = new ServerNewsWD();
+  /*
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         Bot bot = new Bot();
         botsApi.registerBot(new Bot());
 
         TaskBot taskBot = new TaskBot();
         taskBot.startTask(600, bot);//900
+
+         */
 
 
     }
