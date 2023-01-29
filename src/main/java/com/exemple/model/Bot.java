@@ -424,10 +424,11 @@ public class Bot extends TelegramLongPollingBot {
         return returnListMesseges;
     }
 
-    public void updateCustomerToMap(User user) {
+    public Customer updateCustomerToMap(User user) {
         Customer customer = new Customer(user);
         mapCustomer.put(customer.getIdChat(), customer);
         botServiceImp.sendText(customer.getIdChat(), "Настройки применены.");
+        return customer;
     }
 
 }
