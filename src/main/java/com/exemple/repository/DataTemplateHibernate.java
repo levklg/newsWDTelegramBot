@@ -32,13 +32,21 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
     }
 
     @Override
-    public void update(Session session, T object) {
-          session.update(object);
+    public void save(Session session, User user) {
+       session.save(user);
+
+    }
+
+    @Override
+    public void update(Session session, User user) {
+        session.update(user);
+      // session.merge(user).getUserSetting().setAllnews(user.getUserSetting().getAllnews());
+      // session.merge(user);
+
     }
 
     @Override
     public User findUserByName(Session session,String name) {
-
 
         var query =  session.createQuery(String.format("from %s where userName = :name", clazz.getSimpleName()), clazz);
         query.setParameter("name", name);
@@ -50,6 +58,5 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
 
 
     }
-
 
 }

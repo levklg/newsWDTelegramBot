@@ -1,17 +1,14 @@
 package com.exemple.model;
 
-
 import jakarta.persistence.*;
-
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
 
     @Column(name = "name")
     private String userName;
@@ -22,17 +19,13 @@ public class User {
     @Column(name = "telegram_id")
     private long telegramID;
 
-
     @OneToOne( cascade = CascadeType.ALL)
     @JoinColumn(name = "usersetting_id")
     private UserSetting userSetting;
 
-
-
     public User(){
 
     }
-
 
     public User(String name, String password, long telegramID, UserSetting userSetting) {
         this.userName = name;
@@ -40,8 +33,6 @@ public class User {
         this.telegramID = telegramID;
         this.userSetting = userSetting;
     }
-
-
 
     public User(String name, String password) {
         this.userName = name;
@@ -54,8 +45,6 @@ public class User {
 
         return  user;
     }
-
-
 
     public Long getId() {
         return id;

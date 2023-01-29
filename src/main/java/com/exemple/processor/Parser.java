@@ -1,4 +1,4 @@
-package com.exemple.service;
+package com.exemple.processor;
 
 import java.util.Map;
 

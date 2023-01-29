@@ -1,5 +1,6 @@
 package com.exemple.server;
 
+import com.exemple.model.Bot;
 import com.exemple.model.User;
 import com.exemple.model.UserSetting;
 import com.exemple.service.CustomerServiceImp;
@@ -10,6 +11,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class ProcessingHandler extends SimpleChannelInboundHandler<String> {
     CustomerServiceImp customerServiceImp = new CustomerServiceImp();
+    Bot bot;
+    public ProcessingHandler(Bot bot){
+        this.bot = bot;
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -33,8 +38,9 @@ public class ProcessingHandler extends SimpleChannelInboundHandler<String> {
                 String userGson;
                 userGson =   s.split("\\ ", 2)[1];
                 User user = gson.fromJson(userGson, User.class);
-                System.out.println("update " + user.getUserSetting().isAllnews());
+                System.out.println("Server Update user  " + user.getUserSetting().getAllnews() + " " + user.getUserSetting().getListFindString().size());
                 customerServiceImp.updateUser(user);
+                bot.updateCustomerToMap(user);
             }
 
         }

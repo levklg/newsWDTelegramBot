@@ -31,7 +31,6 @@ public class CustomerServiceImp implements CustomerService {
         }else{
             return true;  //  mapCustomer не пустой, значит совпадения найдены, возвращаем true
         }
-
     }
 
     @Override
@@ -51,7 +50,6 @@ public class CustomerServiceImp implements CustomerService {
     public void updateUser(User user) {
         dbServiceUser.update(user);
     }
-
 
     @Override
     public HashMap<Long, Customer> createMapCustomer(List<User> userList) {
@@ -76,7 +74,6 @@ public class CustomerServiceImp implements CustomerService {
 
     @Override
     public List<String> getListOfNewsForTheUser(Map<String, String> mapUpDateNews) {
-
 
         return null;
     }

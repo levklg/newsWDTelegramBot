@@ -42,45 +42,46 @@ public class BotServiceImp implements BotService {
         customer.setIsPassword(false);
         customer.setIsPasswordInput(true);
 
-       return customer;
+        return customer;
     }
 
     @Override
-    public Customer loginInput(Customer customer, Message msg, HashMap<Long,Customer> mapCustomer) {
+    public Customer loginInput(Customer customer, Message msg, HashMap<Long, Customer> mapCustomer) {
 
         if (msg.hasText()) {
+            String login;
+            if (!customerService.isUserExists(mapCustomer, customer.getTelegramID(), msg.getText())) {
+                login = msg.getText().replace("/", "");
+                customer.setUserName(login);
+                sendText(customer.getIdChat(), "Ваш логин: " + login);
+                pause();
+                sendText(customer.getIdChat(), "Далее отправьте команду /password");
+                customer.setIsLoginInput(false);
 
-             if(!customerService.isUserExists(mapCustomer,customer.getTelegramID(),msg.getText())){
-                 customer.setUserName(msg.getText());
-                 sendText(customer.getIdChat(), "Ваш логин: " + msg.getText());
-                 pause();
-                 sendText(customer.getIdChat(), "Далее отправьте команду /password");
-                 customer.setIsLoginInput(false);
-
-             }else{
-                 sendText(customer.getIdChat(), "Такой логин, уже существует: " + msg.getText());
-             }
+            } else {
+                sendText(customer.getIdChat(), "Такой логин, уже существует: " + msg.getText());
+            }
 
         }
         return customer;
     }
 
     @Override
-    public Customer passwordInput(Customer customer, Message msg, HashMap<Long,Customer> mapCustomer) {
+    public Customer passwordInput(Customer customer, Message msg, HashMap<Long, Customer> mapCustomer) {
 
         if (msg.hasText()) {
             for (Map.Entry<Long, Customer> entry : mapCustomer.entrySet()) {
                 long id = entry.getKey();
-
-                if(customer.getIdChat() == id){
-                    if(!customer.getUserName().equals("")){
+                long custumerIDChat = customer.getIdChat();
+                if (custumerIDChat == id) {
+                    if (!customer.getUserName().equals("")) {
                         String bcryptPassword = new BCryptPasswordEncoder().encode(msg.getText());
                         customer.setPassword(bcryptPassword);
                         sendText(customer.getIdChat(), "Ваш пароль: " + msg.getText());
                         pause();
 
                         var customerSaved = customerService.saveCustomerToUser(customer);
-                        if(customerSaved != null) {
+                        if (customerSaved != null) {
                             sendText(customerSaved.getIdChat(), "Ваша учетная запись успешно создана");
                             pause();
                             sendText(customerSaved.getIdChat(), "Ваш логин: " + customerSaved.getUserName());
@@ -88,12 +89,12 @@ public class BotServiceImp implements BotService {
                             sendText(customerSaved.getIdChat(), "Ваш пароль: " + msg.getText());
                             pause();
                             sendText(customerSaved.getIdChat(), "Для настроек и запуска пройдите на www.newswatchdog.org");
-                        }else {
+                        } else {
                             sendText(customer.getIdChat(), "Ошибка при регистрации, повторите регистрацию сначала.");
                         }
                         customer.setIsPasswordInput(false);
 
-                    } else{
+                    } else {
                         sendText(customer.getIdChat(), "Сначала выполните команду /login");
                         customer.setIsPasswordInput(false);
                         break;
@@ -101,9 +102,8 @@ public class BotServiceImp implements BotService {
                 }
             }
 
-
         }
-       return customer;
+        return customer;
     }
 
     @Override
@@ -111,7 +111,6 @@ public class BotServiceImp implements BotService {
         var mapCustomer = customerService.getAllCustomer();
         return mapCustomer;
     }
-
 
     public void sendText(Long who, String what) {
         SendMessage sm = SendMessage.builder()
@@ -123,8 +122,6 @@ public class BotServiceImp implements BotService {
             throw new RuntimeException(e);
         }
     }
-
-
 
     public void pause() {
         try {

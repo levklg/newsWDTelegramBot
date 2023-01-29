@@ -2,11 +2,8 @@ package com.exemple.model;
 
 
 import com.exemple.dao.NewsStorageContainer;
-import com.exemple.model.Customer;
-import com.exemple.model.User;
-import com.exemple.model.UserSetting;
-import com.exemple.service.ParserImp;
-import com.exemple.service.ProcessingMapImp;
+import com.exemple.processor.ParserImp;
+import com.exemple.processor.ProcessingMapImp;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -20,6 +17,7 @@ import java.util.Map;
 
 public class Bot extends TelegramLongPollingBot {
 
+    private final static String BOTTOKIN = "";
     private static BotServiceImp botServiceImp;
     private static ParserImp parserImp;
     private static NewsStorageContainer newsStorageContainer;
@@ -48,7 +46,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "5883016412:AAEn37R4wSxiMhqFQ0GDFcvl3eqodgUUsk0";
+        return BOTTOKIN;
     }
 
     @Override
@@ -59,13 +57,11 @@ public class Bot extends TelegramLongPollingBot {
         var id = user.getId();
         var textMsg = msg.getText();
 
-
         if (mapCustomer.isEmpty() || mapCustomer.get(id) == null) {   // добавляем новогоклиента
             Customer newCustomer = new Customer(id);
             newCustomer.setUserName(user.getUserName());
             mapCustomer.put(id, newCustomer);
         }
-
 
         if (msg.isCommand()) {
 
@@ -92,8 +88,6 @@ public class Bot extends TelegramLongPollingBot {
 
             }
         }
-
-
         // ловим и обрабатываем команды /login, /password
         if (msg.hasText()) {
             if (mapCustomer.get(id).isLogin()) {
@@ -120,30 +114,21 @@ public class Bot extends TelegramLongPollingBot {
             }
         }
 
-
         return;
     }
 
     public void processCustomers() {
+
         downloadContent();
-        mapCustomer = botServiceImp.getAllCustomer(); //// для тестов потом заменить на changeUserSetting
-        if(mapCustomer.size() == 0){
-            System.out.println("Список клиентов пустой " + mapCustomer.size());
-        }
-        System.out.println(mapCustomer.size());
         for (var elementMapCustomer : mapCustomer.entrySet()) {
             sendCustomerNews(elementMapCustomer.getValue());
 
         }
-
-
     }
 
     public void downloadContent() {    /// Загружаем содержимое сайтов в DAO
         ProcessingMapImp processingMapImp = new ProcessingMapImp();
-
         Map<String, String> contentSite;
-
         contentSite = parserImp.parsingKP40();
         if (!processingMapImp.compareMaps(contentSite, newsStorageContainer.getNewsKP40())) { // если полученные новости отличаются от предыдущих
             var mapNewsNow = processingMapImp.getMapOfNewsUpdates(contentSite, newsStorageContainer.getNewsKP40());
@@ -151,9 +136,7 @@ public class Bot extends TelegramLongPollingBot {
             newsStorageContainer.setMapNowKP40(mapNewsNow);
             newsStorageContainer.getNewsKP40().clear();
             newsStorageContainer.setMapKP40(contentSite);// контейнер со свежими новостями
-            //  var mapMergeNews = processingMapImp.mergeMapNewsUpdates(contentSite, newsStorageContainer.getNewsKP40()); // добовляем свежие новости в контейнер для новостей
-        //    newsStorageContainer.setMapKP40(mapMergeNews);
-        }else{
+        } else {
             newsStorageContainer.getNowNewsKP40().clear();
         }
 
@@ -164,9 +147,7 @@ public class Bot extends TelegramLongPollingBot {
             newsStorageContainer.setMapNowRBC(mapNewsNow);
             newsStorageContainer.getNewsRBC().clear();
             newsStorageContainer.setMapRBC(contentSite);
-          //  var mapMergeNews = processingMapImp.mergeMapNewsUpdates(contentSite, newsStorageContainer.getNewsRBC());
-         //   newsStorageContainer.setMapRBC(mapMergeNews);
-        }else{
+        } else {
             newsStorageContainer.getNowNewsRBC().clear();
         }
 
@@ -177,9 +158,7 @@ public class Bot extends TelegramLongPollingBot {
             newsStorageContainer.setMapNowKalugaPoisk(mapNewsNow);
             newsStorageContainer.getNewsKalugaPoisk().clear();
             newsStorageContainer.setMapKalugaPoisk(contentSite);
-        //    var mapMergeNews = processingMapImp.mergeMapNewsUpdates(contentSite, newsStorageContainer.getNewsKalugaPoisk());
-        //    newsStorageContainer.setMapKalugaPoisk(mapMergeNews);
-        }else{
+        } else {
             newsStorageContainer.getNowNewsKalugaPoisk().clear();
         }
 
@@ -190,9 +169,7 @@ public class Bot extends TelegramLongPollingBot {
             newsStorageContainer.setMapNowNikaTV(mapNewsNow);
             newsStorageContainer.getNewsNikaTV().clear();
             newsStorageContainer.setMapNikaTV(contentSite);
-        //    var mapMergeNews = processingMapImp.mergeMapNewsUpdates(contentSite, newsStorageContainer.getNewsNikaTV());
-         //   newsStorageContainer.setMapNikaTV(mapMergeNews);
-        }else{
+        } else {
             newsStorageContainer.getNowNewsNikaTV().clear();
         }
 
@@ -203,9 +180,7 @@ public class Bot extends TelegramLongPollingBot {
             newsStorageContainer.setMapNowZnamKaluga(mapNewsNow);
             newsStorageContainer.getNewsZnamKaluga().clear();
             newsStorageContainer.setMapZnamKaluga(contentSite);
-       //     var mapMergeNews = processingMapImp.mergeMapNewsUpdates(contentSite, newsStorageContainer.getNewsZnamKaluga());
-        //    newsStorageContainer.setMapZnamKaluga(mapMergeNews);
-        }else{
+        } else {
             newsStorageContainer.getNowNewsZnamKaluga().clear();
         }
     }
@@ -215,30 +190,28 @@ public class Bot extends TelegramLongPollingBot {
         var userSetting = customer.getUser().getUserSetting();
         var listFindString = userSetting.getListFindString();
         var mapWebSites = userSetting.getMapWebSites();
-        var userNewsList = wordFilterListPreparation(listFindString, mapWebSites, userSetting.isAllnews());
+        var userNewsList = wordFilterListPreparation(listFindString, mapWebSites, userSetting.getAllnews());
         var messages = preparingMessage(userNewsList);
         for (var message : messages) {
-            System.out.println("Customer " + customer.getUserName());
-            System.out.println(message.getText());
-      //    botServiceImp.sendText(customer.getIdChat(), message.getText());
+            botServiceImp.sendText(customer.getIdChat(), message.getText());
             pause(1000);
         }
 
     }
 
-    public List<String> wordFilterListPreparation(List<String> listFindString, Map<String, String> mapWebSites, boolean allnews) { //Создаем список новостей по фильтру
+    public List<String> wordFilterListPreparation(List<String> listFindString, Map<String, String> mapWebSites, String allnews) { //Создаем список новостей по фильтру
         List<String> returnList = new ArrayList<>();
 
         // Если выбрано отправить все новости
-        if (allnews) {
+        if (allnews.equals("1")) {
             var tmpList = preparingAllNews(mapWebSites);
-            if(!tmpList.isEmpty()) {
+            if (!tmpList.isEmpty()) {
                 returnList.addAll(tmpList);
             }
         }
-        if(!listFindString.isEmpty()) {
-           var tmpList =  preparingFilterNews(mapWebSites, listFindString);    //Добовляем новости по словам из списка
-            if(!tmpList.isEmpty()) {
+        if (!listFindString.isEmpty()) {
+            var tmpList = preparingFilterNews(mapWebSites, listFindString);    //Добовляем новости по словам из списка
+            if (!tmpList.isEmpty()) {
                 returnList.addAll(tmpList);
             }
         }
@@ -331,14 +304,15 @@ public class Bot extends TelegramLongPollingBot {
                     List<String> tmpListNews = new ArrayList<>();
                     tmpListNews.add("start");
                     tmpListNews.add("http://rbc.ru");
-
                     for (var elementNewsMap : newsMap.entrySet()) {
                         for (var s : listFindString) {
                             if (StringUtils.containsIgnoreCase(elementNewsMap.getKey(), s)) {
-                                tmpListNews.add(elementNewsMap.getKey());
+                                if (!tmpListNews.stream().filter(e -> e.equals(elementNewsMap.getKey())).findFirst().isPresent()) {
+                                    tmpListNews.add(elementNewsMap.getKey());
+                                }
                             }
                         }
-                        //
+
                     }
                     tmpListNews.add("end");
                     if (tmpListNews.size() > 3) {
@@ -353,7 +327,9 @@ public class Bot extends TelegramLongPollingBot {
                     for (var elementNewsMap : newsMap.entrySet()) {
                         for (var s : listFindString) {
                             if (StringUtils.containsIgnoreCase(elementNewsMap.getKey(), s)) {
-                                tmpListNews.add(elementNewsMap.getKey());
+                                if (!tmpListNews.stream().filter(e -> e.equals(elementNewsMap.getKey())).findFirst().isPresent()) {
+                                    tmpListNews.add(elementNewsMap.getKey());
+                                }
                             }
                         }
                     }
@@ -370,7 +346,9 @@ public class Bot extends TelegramLongPollingBot {
                     for (var elementNewsMap : newsMap.entrySet()) {
                         for (var s : listFindString) {
                             if (StringUtils.containsIgnoreCase(elementNewsMap.getKey(), s)) {
-                                tmpListNews.add(elementNewsMap.getKey());
+                                if (!tmpListNews.stream().filter(e -> e.equals(elementNewsMap.getKey())).findFirst().isPresent()) {
+                                    tmpListNews.add(elementNewsMap.getKey());
+                                }
                             }
                         }
                     }
@@ -387,7 +365,9 @@ public class Bot extends TelegramLongPollingBot {
                     for (var elementNewsMap : newsMap.entrySet()) {
                         for (var s : listFindString) {
                             if (StringUtils.containsIgnoreCase(elementNewsMap.getKey(), s)) {
-                                tmpListNews.add(elementNewsMap.getKey());
+                                if (!tmpListNews.stream().filter(e -> e.equals(elementNewsMap.getKey())).findFirst().isPresent()) {
+                                    tmpListNews.add(elementNewsMap.getKey());
+                                }
                             }
                         }
                     }
@@ -404,7 +384,9 @@ public class Bot extends TelegramLongPollingBot {
                     for (var elementNewsMap : newsMap.entrySet()) {
                         for (var s : listFindString) {
                             if (StringUtils.containsIgnoreCase(elementNewsMap.getKey(), s)) {
-                                tmpListNews.add(elementNewsMap.getKey());
+                                if (!tmpListNews.stream().filter(e -> e.equals(elementNewsMap.getKey())).findFirst().isPresent()) {
+                                    tmpListNews.add(elementNewsMap.getKey());
+                                }
                             }
                         }
                     }
@@ -440,6 +422,12 @@ public class Bot extends TelegramLongPollingBot {
         }
 
         return returnListMesseges;
+    }
+
+    public void updateCustomerToMap(User user) {
+        Customer customer = new Customer(user);
+        mapCustomer.put(customer.getIdChat(), customer);
+        botServiceImp.sendText(customer.getIdChat(), "Настройки применены.");
     }
 
 }

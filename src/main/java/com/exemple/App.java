@@ -30,14 +30,7 @@ public class App {
 
     public static void main(String[] args) throws TelegramApiException {
 
-
-
-
-
-
         var configuration = new Configuration().configure(HIBERNATE_CFG_FILE);
-
-
         var dbUrl = configuration.getProperty("hibernate.connection.url");
         var dbUserName = configuration.getProperty("hibernate.connection.username");
         var dbPassword = configuration.getProperty("hibernate.connection.password");
@@ -49,18 +42,17 @@ public class App {
         transactionManager = new TransactionManagerHibernate(sessionFactory);
 
         userDataTemplate = new DataTemplateHibernate<>(User.class);
-        CustomerServiceImp customerServiceImp = new CustomerServiceImp();
-        var customer =customerServiceImp.findCustomerName("Lev");
-        ServerNewsWD serverNewsWD = new ServerNewsWD();
-  /*
+
+
+
         TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         Bot bot = new Bot();
         botsApi.registerBot(new Bot());
-
+        ServerNewsWD serverNewsWD = new ServerNewsWD(bot);
         TaskBot taskBot = new TaskBot();
         taskBot.startTask(600, bot);//900
 
-         */
+
 
 
     }

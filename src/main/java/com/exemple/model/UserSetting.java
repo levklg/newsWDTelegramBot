@@ -12,10 +12,8 @@ import java.util.Map;
 public class UserSetting {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-
 
     @ElementCollection(fetch = FetchType.LAZY )
     @CollectionTable(name = "user_setting_mapwebsites" , joinColumns = @JoinColumn(name = "user_setting_id"))
@@ -28,9 +26,8 @@ public class UserSetting {
     @Column( name = "list_find_string" )
     private List<String> listFindString = new ArrayList<>();
 
-    @Column(name = "allnews")
-    private boolean allnews ;
-
+    @Column(name = "allnews", updatable = true)
+    private String allnews ;
 
     public UserSetting() {
         mapWebSites.put("rbc","");
@@ -38,10 +35,10 @@ public class UserSetting {
         mapWebSites.put("nikatv","");
         mapWebSites.put("znamkaluga","");
         mapWebSites.put("kaluga-poisk","");
-        allnews = false;
+        allnews = "";
     }
 
-    public UserSetting(List<String> listFindString, Map<String, String> mapWebSites, boolean allnews ){
+    public UserSetting(List<String> listFindString, Map<String, String> mapWebSites, String allnews ){
         this.listFindString = listFindString;
         this.mapWebSites = mapWebSites;
         this.allnews = allnews;
@@ -72,11 +69,11 @@ public class UserSetting {
         return id;
     }
 
-    public boolean isAllnews(){
+    public String getAllnews(){
         return  this.allnews;
     }
 
-    public  void setAllnews(boolean allnews){
+    public  void setAllnews(String allnews){
         this.allnews = allnews;
     }
 

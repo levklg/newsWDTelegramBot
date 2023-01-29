@@ -1,5 +1,6 @@
-package com.exemple.service;
+package com.exemple.processor;
 
+import com.exemple.processor.Parser;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,6 +19,7 @@ public class ParserImp implements Parser {
     public ParserImp() {
 
     }
+
     @Override
     public Map<String, String> parsingNika() {
         HashMap<String, String> returnHashMap = new HashMap<>();
@@ -37,9 +39,8 @@ public class ParserImp implements Parser {
             var lh = element.eachAttr("href");
 
             for (int i = 0; i < lt.size(); i++) {
-                returnHashMap.put(lt.get(i),"https://nikatv.ru" + lh.get(i));
+                returnHashMap.put(lt.get(i), "https://nikatv.ru" + lh.get(i));
             }
-
 
 
         } catch (IOException e) {
@@ -95,11 +96,8 @@ public class ParserImp implements Parser {
         }
 
 
-
         return returnHashMap;
     }
-
-
 
 
     public Map<String, String> parsingKaluga24() {
@@ -113,7 +111,7 @@ public class ParserImp implements Parser {
             conn.header("Accept-Language", "zh-CN,zh;q=0.8");
             conn.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
 
-          doc =  conn.get();
+            doc = conn.get();
 
         } catch (IOException e) {
             System.out.println("No response from kaluga24.tv");
@@ -127,7 +125,7 @@ public class ParserImp implements Parser {
         element = resultLinks.select("a[href]");
         List<String> listText = new LinkedList<>();
         List<String> listHref = new LinkedList<>();
-        for ( var e : element) {
+        for (var e : element) {
             listText.add(e.text());
             listHref.add(e.attr("href"));
         }
@@ -139,6 +137,7 @@ public class ParserImp implements Parser {
 
         return returnHashMap;
     }
+
     @Override
     public Map<String, String> parsingKP40() {
         HashMap<String, String> returnHashMap = new HashMap<>();
@@ -161,7 +160,7 @@ public class ParserImp implements Parser {
             var lh = element.eachAttr("href");
 
             for (int i = 0; i < lt.size(); i++) {
-                returnHashMap.put(lt.get(i),  "https://www.kp40.ru/news/" + lh.get(i));
+                returnHashMap.put(lt.get(i), "https://www.kp40.ru/news/" + lh.get(i));
             }
 
         } catch (IOException e) {
@@ -169,9 +168,9 @@ public class ParserImp implements Parser {
             System.out.println(e);
         }
 
-
-      return returnHashMap;
+        return returnHashMap;
     }
+
     @Override
     public Map<String, String> parsingKalugaPoisk() {
         HashMap<String, String> returnHashMap = new HashMap<>();
@@ -195,22 +194,19 @@ public class ParserImp implements Parser {
             var lh = element.eachAttr("href");
 
             for (int i = 0; i < lt.size(); i++) {
-                returnHashMap.put(lt.get(i),lh.get(i));
+                returnHashMap.put(lt.get(i), lh.get(i));
             }
-
 
         } catch (IOException e) {
             System.out.println("No response from kaluga-poisk.ru");
             System.out.println(e);
         }
 
-
         return returnHashMap;
     }
 
     @Override
     public Map<String, String> parsingZnamKaluga() {
-
 
         HashMap<String, String> returnHashMap = new HashMap<>();
         Document doc = null;
@@ -227,21 +223,14 @@ public class ParserImp implements Parser {
             Elements element = resultLinks.select("a[href]");
             var lt = element.eachText();
             var lh = element.eachAttr("href");
-
             for (int i = 0; i < lt.size(); i++) {
-                returnHashMap.put(lt.get(i),lh.get(i));
+                returnHashMap.put(lt.get(i), lh.get(i));
             }
-
-
-
         } catch (IOException e) {
             System.out.println("No response from znamkaluga.ru.ru");
             System.out.println(e);
         }
-
-
         return returnHashMap;
-
     }
 
 }

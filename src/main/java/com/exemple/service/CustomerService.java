@@ -16,6 +16,4 @@ public interface CustomerService {
     Customer saveCustomerToUser(Customer customer);
     List<String> getListOfNewsForTheUser(Map<String, String>  mapUpDateNews);
 
-
-
 }

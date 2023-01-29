@@ -13,7 +13,8 @@ public interface DBServiceUser {
     Optional<User> getUser(long id);
 
     List<User> findAll();
-    void update( User user);
+
+    void update(User user);
 
     User findByUserName(String name);
 }

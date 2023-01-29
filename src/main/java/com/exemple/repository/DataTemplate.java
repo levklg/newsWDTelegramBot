@@ -10,13 +10,13 @@ import java.util.Optional;
 public interface DataTemplate<T>  {
     Optional<T> findById(Session session, long id);
 
-   // List<T> findByEntityField(Session session, String entityFieldName, Object entityFieldValue);
-
     List<T> findAll(Session session);
 
     void insert(Session session, T object);
 
-    void update(Session session, T object);
+    void save(Session session, User user);
+
+    void update(Session session, User user);
 
     User findUserByName(Session session, String name);
 }

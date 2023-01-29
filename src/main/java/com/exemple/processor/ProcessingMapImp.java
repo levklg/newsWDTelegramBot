@@ -1,5 +1,6 @@
-package com.exemple.service;
+package com.exemple.processor;
 
+import com.exemple.processor.ProcessingMap;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 
