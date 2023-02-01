@@ -40,7 +40,8 @@ public class ProcessingHandler extends SimpleChannelInboundHandler<String> {
                 User user = gson.fromJson(userGson, User.class);
                 System.out.println("Server Update user  " + user.getUserSetting().getAllnews() + " " + user.getUserSetting().getListFindString().size());
                 customerServiceImp.updateUser(user);
-                bot.updateCustomerToMap(user);
+                var castomer = bot.updateCustomerToMap(user);
+                bot.sendCustomerNews(castomer);
             }
 
         }

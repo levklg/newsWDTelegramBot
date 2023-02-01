@@ -68,16 +68,18 @@ public class BotServiceImp implements BotService {
 
     @Override
     public Customer passwordInput(Customer customer, Message msg, HashMap<Long, Customer> mapCustomer) {
-
+        String password;
         if (msg.hasText()) {
             for (Map.Entry<Long, Customer> entry : mapCustomer.entrySet()) {
                 long id = entry.getKey();
                 long custumerIDChat = customer.getIdChat();
+
                 if (custumerIDChat == id) {
                     if (!customer.getUserName().equals("")) {
-                        String bcryptPassword = new BCryptPasswordEncoder().encode(msg.getText());
+                        password = msg.getText().replace("/", "");
+                        String bcryptPassword = new BCryptPasswordEncoder().encode(password);
                         customer.setPassword(bcryptPassword);
-                        sendText(customer.getIdChat(), "Ваш пароль: " + msg.getText());
+                        sendText(customer.getIdChat(), "Ваш пароль: " + password);
                         pause();
 
                         var customerSaved = customerService.saveCustomerToUser(customer);
@@ -86,9 +88,9 @@ public class BotServiceImp implements BotService {
                             pause();
                             sendText(customerSaved.getIdChat(), "Ваш логин: " + customerSaved.getUserName());
                             pause();
-                            sendText(customerSaved.getIdChat(), "Ваш пароль: " + msg.getText());
+                            sendText(customerSaved.getIdChat(), "Ваш пароль: " + password);
                             pause();
-                            sendText(customerSaved.getIdChat(), "Для настроек и запуска пройдите на www.newswatchdog.org");
+                            sendText(customerSaved.getIdChat(), "Для настроек и запуска пройдите на http://194.87.109.104:8223/index");
                         } else {
                             sendText(customer.getIdChat(), "Ошибка при регистрации, повторите регистрацию сначала.");
                         }
